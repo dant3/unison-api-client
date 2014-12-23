@@ -1,0 +1,42 @@
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://${project.rootProject.absoluteProjectPath("repo")}")
+
+            pom.project {
+                name 'Unison Api Client'
+                packaging 'jar'
+                inceptionYear '2014'
+                url 'https://developers.unison.com/'
+                description project.description
+
+                issueManagement {
+                    system 'GITHUB'
+                    url 'https://github.com/unisontech/unison-api-client'
+                }
+
+                scm {
+                    url 'https://github.com/unisontech/unison-api-client'
+                    connection 'scm:git:https://github.com/unisontech/unison-api-client.git'
+                    developerConnection 'scm:git:https://github.com/unisontech/unison-api-client.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'dant3'
+                        name 'Viacheslav Blinov'
+                        email 'vblinov@unison.com'
+                    }
+                }
+            }
+        }
+    }
+}

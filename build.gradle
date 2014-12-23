@@ -1,0 +1,149 @@
+plugins {
+    id 'java'
+    id 'maven'
+    id 'nebula.provided-base' version '2.0.1'
+    // -- analysis
+    id 'pmd'
+    id 'findbugs'
+    id 'jacoco'
+}
+// ----------------
+apply {
+    from 'deployment.gradle'
+    from 'gradle/scala.gradle'
+    from 'gradle/java-bootclasspath.gradle'
+    // --- useful gradle add-ons ---
+    from 'gradle/findbugs-console-output.gradle'
+}
+
+group = 'com.unison'
+version = '1.0'
+description = 'A client library that provides interaction with unison.com service via it\'s public API.'
+
+ext {
+    useLoggerInTests = true
+}
+
+scala {
+    version = '2.10.4'
+}
+
+// --=[ javac opts ]=--
+compileJava {
+    // Compile to Java 6 to support Android
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+    options.deprecation = true
+    options.encoding = 'UTF-8'
+    options.incremental = true
+    options.compilerArgs = [ "-Werror", "-Xlint:all", "-Xlint:-processing" ]
+}
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+    // --=[ json & rest ]=--
+    compile 'com.squareup.retrofit:retrofit:1.8.0'
+    compile 'com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.1.0'
+    compile 'joda-time:joda-time:2.6'
+    compile 'org.joda:joda-convert:1.2'
+
+    // --=[ http client ]=--
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    // --=[ auth headers needs base64 ]=--
+    compile 'commons-codec:commons-codec:1.10'
+
+
+    // --=[ compile-time boilerplate annotations ]=--
+    provided group: 'org.projectlombok', name: 'lombok', version:'1.14.8'
+
+    // --=[ common functions and lang flaws sugar ]=--
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.3.2'
+    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'com.google.guava', name: 'guava', version:'18.0'
+
+    // --=[ logger facade ]=--
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.5'
+    // --=[ findbugs annotations ]=--
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version:'2.0.1'
+
+    // needs to be declared as compile dependency for IDE integration - we don't use it in main sources
+    provided scalaLang()
+    // ----------------------------
+    // ---| TEST  DEPENDENCIES |---
+    // ----------------------------
+    testCompile scalaLang()
+    testCompile scalaLibrary(group: 'org.scalatest', name: 'scalatest', version: '2.2.1')
+    testCompile group: 'org.mockito', name: 'mockito-core', version:'1.9.5'
+    testCompile group: 'com.google.mockwebserver', name: 'mockwebserver', version:'20130706'
+
+    // --=[ slf4j backend implementation ]=--
+    if (useLoggerInTests) {
+        testRuntime group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
+    } else {
+        testRuntime group: 'org.slf4j', name: 'slf4j-nop', version:'1.7.5'
+    }
+}
+
+
+// --- analysis ---
+test {
+    enableAssertions = true
+    finalizedBy jacocoTestReport
+
+    testLogging {
+        events = [
+                "failed"
+        ]
+        // FIXME: this is not work in current gradle, and fixed only in Gradle 2.4
+        showStandardStreams = true
+        showExceptions = true
+        showCauses = true
+        exceptionFormat = "full"
+    }
+}
+
+pmd {
+    consoleOutput = true
+    ignoreFailures = false
+    ruleSetFiles = files("pmd-rules.xml")
+    sourceSets = [ sourceSets.main ] // only analyze main sources
+    toolVersion = '5.1.3'
+}
+
+findbugs {
+    toolVersion = '3.0.0'
+    ignoreFailures = false
+    effort = "default"
+    reportLevel = "medium"
+}
+
+findbugsTest.onlyIf { ext.hasProperty('analyzeTests') && ext.analyzeTests == true }
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    enabled true
+    shouldRunAfter test
+
+    reports {
+        xml {
+            enabled true
+            destination "${buildDir}/reports/coverage/jacoco.xml"
+        }
+        html {
+            enabled true
+            destination "${buildDir}/reports/coverage/"
+        }
+    }
+}
