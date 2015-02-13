@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3'
+    }
+}
+
 plugins {
     id 'java'
     id 'maven'
@@ -9,6 +18,7 @@ plugins {
 }
 // ----------------
 apply {
+    plugin 'com.bmuschko.nexus'
     from 'deployment.gradle'
     from 'gradle/scala.gradle'
     from 'gradle/java-bootclasspath.gradle'
@@ -17,7 +27,7 @@ apply {
 }
 
 group = 'com.unison'
-version = '1.0'
+version = '1.0.1'
 description = 'A client library that provides interaction with unison.com service via it\'s public API.'
 
 ext {
@@ -25,7 +35,7 @@ ext {
 }
 
 scala {
-    version = '2.10.4'
+    version = '2.11.5'
 }
 
 // --=[ javac opts ]=--
@@ -135,4 +145,12 @@ jacocoTestReport {
             destination "${buildDir}/reports/coverage/"
         }
     }
+}
+
+
+// see https://github.com/bmuschko/gradle-nexus-plugin
+nexus {
+    sign = true
+    repositoryUrl = 'http://repo.spb.unison.com/content/repositories/staging/'
+    snapshotRepositoryUrl = 'http://repo.spb.unison.com/content/repositories/staging/'
 }
