@@ -49,29 +49,18 @@ repositories {
 dependencies {
     // --=[ json & rest ]=--
     compile 'com.squareup.retrofit:retrofit:1.8.0'
-    compile 'com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.1.0'
     compile 'joda-time:joda-time:2.6'
     compile 'org.joda:joda-convert:1.2'
 
-    // --=[ http client ]=--
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
-    compile 'com.squareup.okhttp:okhttp:2.0.0'
     // --=[ auth headers needs base64 ]=--
-    compile 'commons-codec:commons-codec:1.10'
-
+    compile 'io.reactivex:rxjava:1.0.3'
 
     // --=[ compile-time boilerplate annotations ]=--
     provided group: 'org.projectlombok', name: 'lombok', version:'1.14.8'
 
-    // --=[ common functions and lang flaws sugar ]=--
-    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.3.2'
-    compile group: 'commons-io', name: 'commons-io', version:'2.4'
-    compile group: 'com.google.guava', name: 'guava', version:'18.0'
 
     // --=[ logger facade ]=--
     compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.5'
-    // --=[ findbugs annotations ]=--
-    compile group: 'com.google.code.findbugs', name: 'jsr305', version:'2.0.1'
 
     // needs to be declared as compile dependency for IDE integration - we don't use it in main sources
     provided scalaLang()

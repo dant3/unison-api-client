@@ -2,9 +2,7 @@ package com.unison.api.client
 
 import java.net.HttpURLConnection
 
-import com.google.common.net.HttpHeaders
 import com.google.mockwebserver.{MockResponse, MockWebServer}
-import org.apache.commons.lang3.StringUtils
 import org.scalatest.{Suite, SuiteMixin}
 
 trait WebServerMock extends SuiteMixin { this: Suite =>
@@ -12,7 +10,7 @@ trait WebServerMock extends SuiteMixin { this: Suite =>
 
   val port = WebServerMock.randomPort
   final def webServer:MockWebServer = _webServer
-  final def webServerUri:String = s"${webServer.getUrl(StringUtils.EMPTY).getProtocol}://localhost:${webServer.getPort}"
+  final def webServerUri:String = s"${webServer.getUrl("").getProtocol}://localhost:${webServer.getPort}"
 
   abstract override def withFixture(test: NoArgTest) = {
     initWebServer()
@@ -38,7 +36,7 @@ trait WebServerMock extends SuiteMixin { this: Suite =>
 
   private def response():MockResponse = response(HttpURLConnection.HTTP_OK)
   private def response(code:Int):MockResponse = new MockResponse()
-                                                    .setHeader(HttpHeaders.CONTENT_TYPE, WebServerMock.APPLICATION_JSON)
+                                                    .setHeader("Content-Type", WebServerMock.APPLICATION_JSON)
                                                     .setResponseCode(code)
 }
 

@@ -1,12 +1,14 @@
 package com.unison.api.client.impl;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.unison.api.UnisonID;
 
 import java.lang.reflect.Type;
 
 public final class UnisonIDConverter extends JsonConverter<UnisonID> {
     private static final UnisonIDConverter instance = new UnisonIDConverter();
+    public static final Type TYPE = new TypeToken<UnisonID>(){}.getType();
 
     private UnisonIDConverter() { super(); }
 

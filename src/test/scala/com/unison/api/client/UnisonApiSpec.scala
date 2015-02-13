@@ -1,6 +1,5 @@
 package com.unison.api.client
 
-import com.google.common.net.HttpHeaders
 import org.scalatest.{Matchers, WordSpec}
 
 class UnisonApiSpec extends WordSpec with Matchers with WebServerMock with Fixtures {
@@ -11,7 +10,7 @@ class UnisonApiSpec extends WordSpec with Matchers with WebServerMock with Fixtu
       val currentUser = testClient.whoAmI()
       currentUser should === (whoAmI)
 
-      val authHeader = takeRequest.getHeader(HttpHeaders.AUTHORIZATION)
+      val authHeader = takeRequest.getHeader("authorization")
       authHeader should === (authHeaderSample)
     }
 
