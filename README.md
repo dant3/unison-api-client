@@ -7,7 +7,17 @@ This is a client library that provides interaction with [unison.com service][1] 
 Usage
 -------------
 
-TBD: dependency declaration
+Add a dependency to your project. Here is an example with gradle:
+
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compile 'com.github.dant3:unison-api-client:0.1'
+}
+```
 
 Api is very simple and straightforward:
 
